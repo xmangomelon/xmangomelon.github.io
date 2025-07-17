@@ -4,41 +4,90 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Name - Portfolio</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css"> <!-- Keep your existing CSS -->
+    <style>
+        body { margin: 0; overflow: hidden; } /* Makes the scene full-screen */
+        #billboard-scene { width: 100vw; height: 100vh; } /* Container for the 3D scene */
+    </style>
 </head>
 <body>
-    <header>
-        <h1>Your Name</h1>
-        <p>Web Developer | Designer | [Your Skills]</p>
-    </header>
+    <!-- Your existing header/about/projects/contact sections can go here if you want them above/below -->
     
-    <section id="about">
-        <h2>About Me</h2>
-        <p>Write a short bio here. Mention your experience, skills, and passions.</p>
-    </section>
+    <div id="billboard-scene"></div> <!-- The 3D scene will render here -->
     
-    <section id="projects">
-        <h2>Projects</h2>
-        <ul>
-            <li>
-                <h3>Project 1</h3>
-                <p>Description of the project. <a href="https://link-to-project.com">Live Demo</a> | <a href="https://github.com/your-username/project-repo">GitHub Repo</a></p>
-            </li>
-            <li>
-                <h3>Project 2</h3>
-                <p>Another description.</p>
-            </li>
-            <!-- Add more as needed -->
-        </ul>
-    </section>
+    <!-- Three.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.167.1/build/three.min.js"></script>
+    <!-- OrbitControls for interactive camera -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.167.1/examples/jsm/controls/OrbitControls.js"></script>
     
-    <section id="contact">
-        <h2>Contact</h2>
-        <p>Email: your.email@example.com | LinkedIn: <a href="https://linkedin.com/in/your-profile">Profile</a> | GitHub: <a href="https://github.com/your-username">Your GitHub</a></p>
-    </section>
-    
-    <footer>
-        <p>&copy; 2025 Your Name</p>
-    </footer>
+    <script>
+        // Function to create a canvas texture with text
+        function createLabelTexture(text, fontSize = 60, color = 'black', backgroundColor = 'white', margin = 20) {
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            context.font = `bold ${fontSize}px Arial`;
+            const textWidth = context.measureText(text).width;
+            canvas.width = textWidth + margin * 2;
+            canvas.height = fontSize + margin * 2;
+            context.font = `bold ${fontSize}px Arial`; // Re-set after resizing
+            if (backgroundColor) {
+                context.fillStyle = backgroundColor;
+                context.fillRect(0, 0, canvas.width, canvas.height);
+            }
+            context.textAlign = 'center';
+            context.textBaseline = 'middle';
+            context.fillStyle = color;
+            context.fillText(text, canvas.width / 2, canvas.height / 2);
+            const texture = new THREE.CanvasTexture(canvas);
+            texture.needsUpdate = true; // Ensure texture updates
+            return texture;
+        }
+
+        // Set up the scene
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x87CEEB); // Sky blue background for cool effect
+
+        // Camera
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 50; // Position camera to view the billboard
+
+        // Renderer
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById('billboard-scene').appendChild(renderer.domElement);
+
+        // Create the billboard texture and sprite
+        const text = "I'm not a software engineer";
+        const texture = createLabelTexture(text, 80, 'black', 'white', 40); // Customize size/color/margin
+        const material = new THREE.SpriteMaterial({ map: texture });
+        const billboard = new THREE.Sprite(material);
+        billboard.scale.set(100, 50, 1); // Make it "giant" - adjust width/height as needed
+        billboard.position.set(0, 0, 0); // Center in scene
+        scene.add(billboard);
+
+        // Add some ambient light for visibility (though SpriteMaterial doesn't need it, good for future additions)
+        const light = new THREE.AmbientLight(0xffffff);
+        scene.add(light);
+
+        // Interactive controls
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true; // Smooth orbiting
+        controls.dampingFactor = 0.05;
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update(); // Update controls
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
 </body>
 </html>
