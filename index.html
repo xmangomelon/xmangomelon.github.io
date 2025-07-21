@@ -1,121 +1,123 @@
-<!-- HTML Block: Main structure of the website -->
-<!-- This sets up the basic layout: a boot screen (optional nostalgic loading), taskbar, desktop with icons, and hidden windows. -->
-<!-- The canvas#bg is for Three.js to render a pseudo-3D background, like a starry space for a retro-tech feel. -->
-<!-- Icons are clickable to open corresponding windows. Windows are styled as modals but draggable and resizable. -->
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Windows 95 Portfolio</title>
-    <!-- Import a pixel font for retro aesthetic (VT323 mimics old bitmap fonts). This is raw CSS import, no library. -->
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
-    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.2/p5.min.js"></script>
     <link rel="stylesheet" href="style.css">
-    <!-- Include Three.js from CDN for 3D rendering. -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
-    <!-- Optional boot screen: Mimics a 90s OS loading splash for fun nostalgia. Hidden after load via JS. -->
-    <div id="boot-screen">
-        <div class="boot-text">Starting Windows 95 Portfolio...</div>
-    </div>
+    <div id="boot-screen">Starting Windows 95 Portfolio...</div>
 
-    <!-- Top taskbar with Start button. Clicking Start could open a menu, but kept simple here (alert for demo). -->
     <div id="taskbar">
-        <button id="start-button">Start</button>
-        <!-- Placeholder for clock or other taskbar items, but minimal for now. -->
-        <div id="taskbar-time"></div>
+        <button id="start-button">
+            <img src="icons/start.ico" alt="Start" class="icon-image">
+        </button>
+        <div id="open-apps"></div>
+        <span id="taskbar-time"></span>
     </div>
 
-    <!-- Desktop area: Holds icons and serves as container for Three.js canvas background. -->
     <div id="desktop">
-        <canvas id="bg"></canvas> <!-- Three.js canvas for pseudo-3D background (e.g., rotating cubes or stars). -->
-        
-        <!-- Desktop icons: Styled like Win95 shortcuts. Data-window attribute links to window ID. -->
         <div class="icon" data-window="about-window">
-            <div class="icon-image">📄</div> <!-- Placeholder emoji; replace with image for real icons. -->
-            <div class="icon-text">About</div>
+            <img src="icons/notepad.ico" alt="About" class="icon-image">
+            <span class="icon-text">About</span>
         </div>
+
         <div class="icon" data-window="projects-window">
-            <div class="icon-image">🛠️</div>
-            <div class="icon-text">Projects</div>
+            <img src="icons/folder.ico" alt="Projects" class="icon-image">
+            <span class="icon-text">Projects</span>
         </div>
+
         <div class="icon" data-window="resume-window">
-            <div class="icon-image">📑</div>
-            <div class="icon-text">Resume</div>
+            <img src="icons/projects.ico" alt="Resume" class="icon-image">
+            <span class="icon-text">Resume</span>
         </div>
+
         <div class="icon" data-window="contact-window">
-            <div class="icon-image">📧</div>
-            <div class="icon-text">Contact</div>
+            <img src="icons/notepad.ico" alt="Contact" class="icon-image">
+            <span class="icon-text">Contact</span>
         </div>
-    </div>
 
-    <!-- Windows: Hidden by default, shown/dragged/resized via JS. Styled like Win95 dialogs. -->
-    <div class="window" id="about-window">
-        <div class="titlebar">
-            <span>About Me</span>
-            <div class="window-buttons">
-                <button class="minimize">-</button>
-                <button class="maximize">□</button>
-                <button class="close">X</button>
+        <div class="icon" data-window="snake-window">
+            <img src="icons/snake.ico" alt="Snake" class="icon-image">
+            <span class="icon-text">Snake</span>
+        </div>
+
+        <div id="about-window" class="window">
+            <div class="titlebar">
+                <span>About Me</span>
+                <div class="window-buttons">
+                    <button class="minimize">-</button>
+                    <button class="maximize">□</button>
+                    <button class="close">X</button>
+                </div>
+            </div>
+            <div class="content">
+                I am Tyler Evans a Computer Science student at FAU, currently employed with the City of Oakland Park, FL
             </div>
         </div>
-        <div class="content">
-            <p>Hello! I'm a nostalgic developer bringing back the 90s vibe. This is my about section.</p>
-            <!-- Add more personal info here. -->
-        </div>
-    </div>
 
-    <div class="window" id="projects-window">
-        <div class="titlebar">
-            <span>Projects</span>
-            <div class="window-buttons">
-                <button class="minimize">-</button>
-                <button class="maximize">□</button>
-                <button class="close">X</button>
+        <div id="projects-window" class="window">
+            <div class="titlebar">
+                <span>Projects</span>
+                <div class="window-buttons">
+                    <button class="minimize">-</button>
+                    <button class="maximize">□</button>
+                    <button class="close">X</button>
+                </div>
+            </div>
+            <div class="content">
+                Projects arent uploaded right now, most are WIP
             </div>
         </div>
-        <div class="content">
-            <ul>
-                <li>Project 1: Retro Game Emulator</li>
-                <li>Project 2: 3D Web Experiments</li>
-                <!-- List your projects here. -->
-            </ul>
-        </div>
-    </div>
 
-    <div class="window" id="resume-window">
-        <div class="titlebar">
-            <span>Resume</span>
-            <div class="window-buttons">
-                <button class="minimize">-</button>
-                <button class="maximize">□</button>
-                <button class="close">X</button>
+        <div id="resume-window" class="window">
+            <div class="titlebar">
+                <span>Resume</span>
+                <div class="window-buttons">
+                    <button class="minimize">-</button>
+                    <button class="maximize">□</button>
+                    <button class="close">X</button>
+                </div>
+            </div>
+            <div class="content">
+                IN PROGRESS
             </div>
         </div>
-        <div class="content">
-            <p>Experience: 5+ years in web dev.</p>
-            <p>Skills: HTML, CSS, JS, Three.js</p>
-            <!-- Add resume details or embed a PDF iframe if needed. -->
-        </div>
-    </div>
 
-    <div class="window" id="contact-window">
-        <div class="titlebar">
-            <span>Contact</span>
-            <div class="window-buttons">
-                <button class="minimize">-</button>
-                <button class="maximize">□</button>
-                <button class="close">X</button>
+        <div id="contact-window" class="window">
+            <div class="titlebar">
+                <span>Contact</span>
+                <div class="window-buttons">
+                    <button class="minimize">-</button>
+                    <button class="maximize">□</button>
+                    <button class="close">X</button>
+                </div>
+            </div>
+            <div class="content">
+                Email: tylerbryceevans2006@gmail.com
             </div>
         </div>
-        <div class="content">
-            <p>Email: example@retro.com</p>
-            <p>LinkedIn: /in/retro-dev</p>
-            <!-- Add a simple form if desired, but no backend here. -->
+
+        <div id="snake-window" class="window">
+            <div class="titlebar">
+                <span>Snake Game</span>
+                <div class="window-buttons">
+                    <button class="minimize">-</button>
+                    <button class="maximize">□</button>
+                    <button class="close">X</button>
+                </div>
+            </div>
+            <div class="content">
+                <button id="snakeStartButton">Start Game</button>
+                <canvas id="snakeCanvas" style="display:none;"></canvas>
+                <div id="snakeScore" style="display:none;">Score: 0</div>
+                <div id="snakeGameOver" style="display:none; text-align:center; font-size:20px;">
+                    Game Over!<br>Score: <span id="snakeFinalScore"></span><br>
+                    <button id="snakeRestart">Restart</button>
+                </div>
+            </div>
         </div>
+
+        <canvas id="bg"></canvas>
     </div>
 
     <script src="script.js"></script>
