@@ -1,18 +1,16 @@
 /* CSS Block: Styling for Win95 aesthetic */
-/* Uses gray panels, beveled borders (outset/inset), pixel fonts, and retro colors. */
-/* Responsive: Media queries adjust for smaller screens while keeping nostalgic fixed-width feel. */
+/* Updated: Taskbar height increased to 40px to accommodate Start button icon, adjusted desktop height accordingly. Added styles for Snake game. Added taskbar open apps styling and start game button styling. */
 
-/* Global styles: Set retro font and colors. */
 body {
     margin: 0;
     padding: 0;
-    font-family: 'VT323', monospace; /* Pixel font for 90s bitmap typography. */
-    background-color: rgb(0, 128, 128); /* Classic Win95 teal desktop background. */
-    overflow: hidden; /* Prevent scrolling for desktop feel. */
-    user-select: none; /* Mimic OS non-selectable text. */
+    font-family: 'VT323', monospace;
+    background-color: rgb(0, 128, 128);
+    overflow: hidden;
+    user-select: none;
 }
 
-/* Boot screen: Full-screen overlay for loading nostalgia. */
+/* Boot screen remains the same. */
 #boot-screen {
     position: fixed;
     top: 0;
@@ -32,15 +30,15 @@ body {
     text-align: center;
 }
 
-/* Taskbar: Top-positioned as per requirements, Win95-style with bevel. */
+/* Taskbar: Moved to bottom, border-top instead of bottom for bevel effect, height increased to 40px. */
 #taskbar {
     position: fixed;
-    top: 0;
+    bottom: 0;
     left: 0;
     width: 100%;
-    height: 30px;
+    height: 40px;
     background: silver;
-    border-bottom: 2px outset #fff;
+    border-top: 2px outset #fff;
     display: flex;
     align-items: center;
     padding: 0 5px;
@@ -51,13 +49,51 @@ body {
 #start-button {
     background: silver;
     border: 2px outset #fff;
-    padding: 2px 10px;
+    padding: 4px;
     font-size: 16px;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    height: 32px; /* Match icon height */
 }
 
 #start-button:active {
-    border: 2px inset #fff; /* Pressed button effect. */
+    border: 2px inset #fff;
+}
+
+#start-button .icon-image {
+    margin-right: 5px;
+}
+
+#open-apps {
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+}
+
+.taskbar-app {
+    background: silver;
+    border: 2px outset #fff;
+    padding: 2px 10px;
+    margin-right: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    height: 32px;
+}
+
+.taskbar-app:active {
+    border: 2px inset #fff;
+}
+
+.taskbar-app img {
+    width: 16px;
+    height: 16px;
+    margin-right: 5px;
+}
+
+.taskbar-app span {
+    font-size: 14px;
 }
 
 #taskbar-time {
@@ -67,12 +103,12 @@ body {
     background: silver;
 }
 
-/* Desktop: Container for icons and Three.js canvas. */
+/* Desktop: Adjusted to start from top, height accounts for new 40px taskbar. */
 #desktop {
     position: relative;
     width: 100%;
-    height: calc(100vh - 30px); /* Adjust for taskbar height. */
-    top: 30px;
+    height: calc(100vh - 40px);
+    top: 0;
     overflow: hidden;
 }
 
@@ -82,21 +118,25 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: -1; /* Behind icons. */
+    z-index: -1;
 }
 
-/* Icons: Win95-style with text below, clickable. */
+/* Icons: Updated for image tags, with pixelated rendering. */
 .icon {
     position: absolute;
     width: 80px;
     text-align: center;
     cursor: pointer;
     color: white;
-    text-shadow: 1px 1px black; /* For readability on teal. */
+    text-shadow: 1px 1px black;
 }
 
 .icon-image {
-    font-size: 40px; /* Placeholder; use background-image for real icons. */
+    width: 32px;
+    height: 32px;
+    image-rendering: pixelated; /* Ensures pixely look if scaled. */
+    display: block;
+    margin: 0 auto;
 }
 
 .icon-text {
@@ -105,23 +145,24 @@ body {
     padding: 2px;
 }
 
-/* Position icons on desktop. */
-.icon:nth-child(1) { top: 50px; left: 50px; }
-.icon:nth-child(2) { top: 150px; left: 50px; }
-.icon:nth-child(3) { top: 250px; left: 50px; }
-.icon:nth-child(4) { top: 350px; left: 50px; }
+/* Icon positions updated for five desktop icons in a vertical grid */
+.icon:nth-child(1) { top: 50px; left: 50px; } /* About */
+.icon:nth-child(2) { top: 150px; left: 50px; } /* Projects */
+.icon:nth-child(3) { top: 250px; left: 50px; } /* Resume */
+.icon:nth-child(4) { top: 350px; left: 50px; } /* Contact */
+.icon:nth-child(5) { top: 450px; left: 50px; } /* Snake */
 
-/* Windows: Draggable, resizable modals with Win95 bevels and buttons. */
+/* Windows remain the same. */
 .window {
-    display: none; /* Hidden by default. */
+    display: none;
     position: absolute;
     width: 400px;
     height: 300px;
     background: silver;
     border: 2px outset #dfdfdf;
-    box-shadow: 2px 2px 5px rgba(0,0,0,0.5); /* Subtle shadow for depth. */
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
     z-index: 10;
-    resize: both; /* CSS resize for simulation (modern but raw CSS). */
+    resize: both;
     overflow: auto;
     min-width: 200px;
     min-height: 150px;
@@ -133,7 +174,7 @@ body {
     padding: 2px 5px;
     display: flex;
     align-items: center;
-    cursor: move; /* For dragging. */
+    cursor: move;
 }
 
 .titlebar span {
@@ -165,20 +206,70 @@ body {
     font-size: 16px;
 }
 
-/* Responsive: Adjust for mobile/small screens – scale down elements. */
+/* Snake game styles */
+#snakeStartButton,
+#snakeRestart {
+    display: block;
+    margin: 0 auto 10px;
+    padding: 5px 10px;
+    font-size: 16px;
+    cursor: pointer;
+    background: silver;
+    border: 2px outset #fff;
+    font-family: 'VT323', monospace;
+}
+
+#snakeStartButton:active,
+#snakeRestart:active {
+    border: 2px inset #fff;
+}
+
+#snakeCanvas {
+    display: block;
+    margin: 0 auto;
+    background-color: black;
+    border: 2px solid #fff; /* Retro border */
+    image-rendering: pixelated;
+}
+
+#snakeScore {
+    text-align: center;
+    font-size: 18px;
+    margin-top: 10px;
+    color: black;
+}
+
+#snakeGameOver {
+    text-align: center;
+    font-size: 20px;
+    margin-top: 50px;
+}
+
+#snakeGameOver button {
+    margin-top: 10px;
+    padding: 5px 10px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+/* Responsive remains the same, but accounts for new 40px taskbar. */
 @media (max-width: 768px) {
     .window {
         width: 80%;
         height: 50%;
-        left: 10% !important; /* Center on small screens. */
-        top: 20% !important;
+        left: 10% !important;
+        top: 10% !important;
     }
     .icon {
         width: 60px;
         font-size: 12px;
     }
     #taskbar {
-        height: 25px;
+        height: 35px; /* Adjusted for responsiveness */
         font-size: 14px;
+    }
+    #snakeCanvas {
+        width: 100%; /* Scale down on mobile */
+        height: auto;
     }
 }
