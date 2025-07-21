@@ -1,93 +1,123 @@
+<!-- HTML Block: Main structure of the website -->
+<!-- This sets up the basic layout: a boot screen (optional nostalgic loading), taskbar, desktop with icons, and hidden windows. -->
+<!-- The canvas#bg is for Three.js to render a pseudo-3D background, like a starry space for a retro-tech feel. -->
+<!-- Icons are clickable to open corresponding windows. Windows are styled as modals but draggable and resizable. -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Name - Portfolio</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Keep your existing CSS -->
+    <title>Windows 95 Portfolio</title>
+    <!-- Import a pixel font for retro aesthetic (VT323 mimics old bitmap fonts). This is raw CSS import, no library. -->
     <style>
-        body { margin: 0; overflow: hidden; } /* Makes the scene full-screen */
-        #billboard-scene { width: 100vw; height: 100vh; } /* Container for the 3D scene */
+        @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
     </style>
+    <link rel="stylesheet" href="style.css">
+    <!-- Include Three.js from CDN for 3D rendering. -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
-    <!-- Your existing header/about/projects/contact sections can go here if you want them above/below -->
-    
-    <div id="billboard-scene"></div> <!-- The 3D scene will render here -->
-    
-    <!-- Three.js CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/three@0.167.1/build/three.min.js"></script>
-    <!-- OrbitControls for interactive camera -->
-    <script src="https://cdn.jsdelivr.net/npm/three@0.167.1/examples/jsm/controls/OrbitControls.js"></script>
-    
-    <script>
-        // Function to create a canvas texture with text
-        function createLabelTexture(text, fontSize = 60, color = 'black', backgroundColor = 'white', margin = 20) {
-            const canvas = document.createElement('canvas');
-            const context = canvas.getContext('2d');
-            context.font = `bold ${fontSize}px Arial`;
-            const textWidth = context.measureText(text).width;
-            canvas.width = textWidth + margin * 2;
-            canvas.height = fontSize + margin * 2;
-            context.font = `bold ${fontSize}px Arial`; // Re-set after resizing
-            if (backgroundColor) {
-                context.fillStyle = backgroundColor;
-                context.fillRect(0, 0, canvas.width, canvas.height);
-            }
-            context.textAlign = 'center';
-            context.textBaseline = 'middle';
-            context.fillStyle = color;
-            context.fillText(text, canvas.width / 2, canvas.height / 2);
-            const texture = new THREE.CanvasTexture(canvas);
-            texture.needsUpdate = true; // Ensure texture updates
-            return texture;
-        }
+    <!-- Optional boot screen: Mimics a 90s OS loading splash for fun nostalgia. Hidden after load via JS. -->
+    <div id="boot-screen">
+        <div class="boot-text">Starting Windows 95 Portfolio...</div>
+    </div>
 
-        // Set up the scene
-        const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x87CEEB); // Sky blue background for cool effect
+    <!-- Top taskbar with Start button. Clicking Start could open a menu, but kept simple here (alert for demo). -->
+    <div id="taskbar">
+        <button id="start-button">Start</button>
+        <!-- Placeholder for clock or other taskbar items, but minimal for now. -->
+        <div id="taskbar-time"></div>
+    </div>
 
-        // Camera
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.z = 50; // Position camera to view the billboard
+    <!-- Desktop area: Holds icons and serves as container for Three.js canvas background. -->
+    <div id="desktop">
+        <canvas id="bg"></canvas> <!-- Three.js canvas for pseudo-3D background (e.g., rotating cubes or stars). -->
+        
+        <!-- Desktop icons: Styled like Win95 shortcuts. Data-window attribute links to window ID. -->
+        <div class="icon" data-window="about-window">
+            <div class="icon-image">📄</div> <!-- Placeholder emoji; replace with image for real icons. -->
+            <div class="icon-text">About</div>
+        </div>
+        <div class="icon" data-window="projects-window">
+            <div class="icon-image">🛠️</div>
+            <div class="icon-text">Projects</div>
+        </div>
+        <div class="icon" data-window="resume-window">
+            <div class="icon-image">📑</div>
+            <div class="icon-text">Resume</div>
+        </div>
+        <div class="icon" data-window="contact-window">
+            <div class="icon-image">📧</div>
+            <div class="icon-text">Contact</div>
+        </div>
+    </div>
 
-        // Renderer
-        const renderer = new THREE.WebGLRenderer({ antialias: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        document.getElementById('billboard-scene').appendChild(renderer.domElement);
+    <!-- Windows: Hidden by default, shown/dragged/resized via JS. Styled like Win95 dialogs. -->
+    <div class="window" id="about-window">
+        <div class="titlebar">
+            <span>About Me</span>
+            <div class="window-buttons">
+                <button class="minimize">-</button>
+                <button class="maximize">□</button>
+                <button class="close">X</button>
+            </div>
+        </div>
+        <div class="content">
+            <p>Hello! I'm a nostalgic developer bringing back the 90s vibe. This is my about section.</p>
+            <!-- Add more personal info here. -->
+        </div>
+    </div>
 
-        // Create the billboard texture and sprite
-        const text = "I'm not a software engineer";
-        const texture = createLabelTexture(text, 80, 'black', 'white', 40); // Customize size/color/margin
-        const material = new THREE.SpriteMaterial({ map: texture });
-        const billboard = new THREE.Sprite(material);
-        billboard.scale.set(100, 50, 1); // Make it "giant" - adjust width/height as needed
-        billboard.position.set(0, 0, 0); // Center in scene
-        scene.add(billboard);
+    <div class="window" id="projects-window">
+        <div class="titlebar">
+            <span>Projects</span>
+            <div class="window-buttons">
+                <button class="minimize">-</button>
+                <button class="maximize">□</button>
+                <button class="close">X</button>
+            </div>
+        </div>
+        <div class="content">
+            <ul>
+                <li>Project 1: Retro Game Emulator</li>
+                <li>Project 2: 3D Web Experiments</li>
+                <!-- List your projects here. -->
+            </ul>
+        </div>
+    </div>
 
-        // Add some ambient light for visibility (though SpriteMaterial doesn't need it, good for future additions)
-        const light = new THREE.AmbientLight(0xffffff);
-        scene.add(light);
+    <div class="window" id="resume-window">
+        <div class="titlebar">
+            <span>Resume</span>
+            <div class="window-buttons">
+                <button class="minimize">-</button>
+                <button class="maximize">□</button>
+                <button class="close">X</button>
+            </div>
+        </div>
+        <div class="content">
+            <p>Experience: 5+ years in web dev.</p>
+            <p>Skills: HTML, CSS, JS, Three.js</p>
+            <!-- Add resume details or embed a PDF iframe if needed. -->
+        </div>
+    </div>
 
-        // Interactive controls
-        const controls = new THREE.OrbitControls(camera, renderer.domElement);
-        controls.enableDamping = true; // Smooth orbiting
-        controls.dampingFactor = 0.05;
+    <div class="window" id="contact-window">
+        <div class="titlebar">
+            <span>Contact</span>
+            <div class="window-buttons">
+                <button class="minimize">-</button>
+                <button class="maximize">□</button>
+                <button class="close">X</button>
+            </div>
+        </div>
+        <div class="content">
+            <p>Email: example@retro.com</p>
+            <p>LinkedIn: /in/retro-dev</p>
+            <!-- Add a simple form if desired, but no backend here. -->
+        </div>
+    </div>
 
-        // Animation loop
-        function animate() {
-            requestAnimationFrame(animate);
-            controls.update(); // Update controls
-            renderer.render(scene, camera);
-        }
-        animate();
-
-        // Handle window resize
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
