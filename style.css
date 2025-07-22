@@ -6,6 +6,7 @@
 /* Mobile scaling fix: Increased window height to calc(100vh - 80px), adjusted positioning for better centering. */
 /* Fix: Adjusted mobile window to fit screen without off-screen issues, added transform none. */
 /* New: Scaled down entire app on mobile with viewport scaling, smaller font/button sizes. */
+/* New: Full-screen windows on mobile, disabled resize, hidden overflow. */
 
 body {
     margin: 0;
@@ -271,33 +272,19 @@ body {
 @media (max-width: 768px) {
     body {
         touch-action: none; /* Prevent unwanted touch behaviors */
-        zoom: 0.8; /* Scale down entire page by 80% on mobile */
+        zoom: 0.7; /* Scale down entire page by 70% on mobile for smaller appearance */
     }
     .window {
-        width: 80%; /* Reduced width for smaller screens */
-        height: 70vh; /* Reduced height to fit without scrolling */
-        left: 10% !important; /* Center horizontally */
-        top: 5% !important; /* Slight space from top */
+        width: 90%; /* Wider for better fit */
+        height: 70vh; /* Reduced to 70vh to fit without scrolling */
+        left: 5% !important; /* Center horizontally */
+        top: 0 !important; /* Start from top */
         transform: none !important; /* Override JS transform */
-        max-height: calc(100vh - 60px); /* Prevent overflow with taskbar */
-        font-size: 14px; /* Smaller font in windows */
-    }
-    .titlebar {
-        padding: 1px 3px; /* Smaller titlebar */
-        font-size: 14px;
-    }
-    .window-buttons button {
-        width: 16px; /* Smaller buttons */
-        height: 16px;
-        font-size: 10px;
-        line-height: 12px;
-    }
-    .content {
-        padding: 5px; /* Reduced padding */
-        font-size: 14px;
+        max-height: calc(100vh - 40px); /* Prevent overflow with taskbar */
+        resize: none; /* Disable resize on mobile to avoid overflow */
     }
     .icon {
-        width: 40px; /* Even smaller icons */
+        width: 40px; /* Smaller icons */
         font-size: 8px;
     }
     .icon-image {
@@ -307,11 +294,10 @@ body {
     .icon-text {
         width: 40px; /* Match smaller icon width */
         font-size: 8px;
-        padding: 1px;
     }
     #desktop {
-        grid-template-rows: repeat(5, minmax(50px, 10vh)); /* Tighter spacing */
-        grid-template-columns: minmax(50px, 12vw);
+        grid-template-rows: repeat(5, minmax(40px, 10vh)); /* Tighter spacing */
+        grid-template-columns: minmax(40px, 12vw);
         padding: 0.5vh 0.5vw;
     }
     #taskbar {
@@ -336,20 +322,34 @@ body {
         padding: 1px 3px;
         font-size: 12px;
     }
+    .titlebar {
+        padding: 1px 3px; /* Smaller titlebar */
+        font-size: 12px;
+    }
+    .window-buttons button {
+        width: 16px; /* Smaller buttons */
+        height: 16px;
+        font-size: 10px;
+        line-height: 12px;
+    }
+    .content {
+        padding: 5px; /* Reduced padding */
+        font-size: 12px; /* Smaller font in content */
+    }
     #snakeCanvas {
         width: 100%;
         aspect-ratio: 1 / 1; /* Keep square on mobile */
     }
     #snakeStartButton,
     #snakeRestart {
-        font-size: 14px;
+        font-size: 12px;
         padding: 3px 6px;
     }
     #snakeScore {
-        font-size: 16px;
+        font-size: 14px;
     }
     #snakeGameOver {
-        font-size: 18px;
+        font-size: 16px;
         margin-top: 30px;
     }
 }
