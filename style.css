@@ -4,6 +4,7 @@
 /* Alignment fix: Use CSS Grid for icons, stricter text control, smaller mobile sizes. */
 /* New: Increased default window size to 600px x 400px. */
 /* Mobile scaling fix: Increased window height to calc(100vh - 80px), adjusted positioning for better centering. */
+/* Fix: Adjusted mobile window to fit screen without off-screen issues, added transform none. */
 
 body {
     margin: 0;
@@ -265,17 +266,18 @@ body {
     cursor: pointer;
 }
 
-/* Responsive: Accounts for new 40px taskbar, improved window scaling with calc height, adjusted positioning. */
+/* Responsive: Accounts for new 40px taskbar, tighter icon positioning, snake aspect ratio, touch-action. */
 @media (max-width: 768px) {
     body {
         touch-action: none; /* Prevent unwanted touch behaviors */
     }
     .window {
         width: 90%; /* Wider for better fit */
-        height: calc(100vh - 80px); /* Fill most of screen, minus taskbar and margins */
+        height: 80vh; /* Reduced to 80vh to fit without off-screen */
         left: 5% !important; /* Center horizontally */
-        top: 20px !important; /* Space from top */
-        max-height: 90vh; /* Prevent overflow */
+        top: 0 !important; /* Start from top */
+        transform: none !important; /* Override JS transform */
+        max-height: calc(100vh - 40px); /* Prevent overflow with taskbar */
     }
     .icon {
         width: 50px; /* Smaller for mobile */
