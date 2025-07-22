@@ -4,7 +4,7 @@
 // Added: Offset for new windows and z-index for bringing to front on click/open.
 // Added: Bring window to front on mousedown anywhere on the window.
 // Added: Snake game in snake-window with canvas, controls, and logic.
-// Added: Larger initial size for Snake window, start button , and in-app game over display.
+// Added: Larger initial size for Snake window, start button, and in-app game over display.
 // Added: Taskbar items for open windows.
 // Mobile improvements: Touch dragging for windows, touchstart for z-index, swipe controls for Snake, dynamic canvas resizing.
 // New: Removed cascading offset for true centering, moved resizeSnakeCanvas after display:block for visibility fix, increased snake window size to 500px.
