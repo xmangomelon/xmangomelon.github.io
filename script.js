@@ -11,6 +11,7 @@
 // Re-added small cascading offset for multiple windows.
 // New: Adjusted window centering to avoid bottom-left corner, using transform and pre-display block.
 // New: Added win.scrollTop = 0 to ensure content starts at top.
+// New: Added touch events to buttons for mobile functionality.
 
 document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
@@ -77,9 +78,24 @@ document.addEventListener('DOMContentLoaded', () => {
         const minBtn = win.querySelector('.minimize');
         const maxBtn = win.querySelector('.maximize');
 
+        // Add touch events for buttons on mobile
+        closeBtn.addEventListener('touchstart', () => {
+            win.style.display = 'none';
+            removeTaskbarItem(win.id);
+            if (win.id === 'snake-window') {
+                stopSnakeGame();
+            }
+        });
         closeBtn.addEventListener('click', () => {
             win.style.display = 'none';
             removeTaskbarItem(win.id);
+            if (win.id === 'snake-window') {
+                stopSnakeGame();
+            }
+        });
+
+        minBtn.addEventListener('touchstart', () => {
+            win.style.display = 'none';
             if (win.id === 'snake-window') {
                 stopSnakeGame();
             }
@@ -88,6 +104,30 @@ document.addEventListener('DOMContentLoaded', () => {
             win.style.display = 'none';
             if (win.id === 'snake-window') {
                 stopSnakeGame();
+            }
+        });
+
+        maxBtn.addEventListener('touchstart', () => {
+            if (win.style.width === '100%') {
+                win.style.width = '600px';
+                win.style.height = '400px';
+                win.style.left = '50%';
+                win.style.top = '50%';
+                win.style.transform = 'translate(-50%, -50%)';
+                if (win.id === 'snake-window') {
+                    win.style.width = '500px';
+                    win.style.height = '500px';
+                    resizeSnakeCanvas();
+                }
+            } else {
+                win.style.width = '100%';
+                win.style.height = 'calc(100% - 40px)'; // Adjust for taller taskbar
+                win.style.left = '0';
+                win.style.top = '0';
+                win.style.transform = 'none';
+                if (win.id === 'snake-window') {
+                    resizeSnakeCanvas();
+                }
             }
         });
         maxBtn.addEventListener('click', () => {
