@@ -1,5 +1,8 @@
 /* CSS Block: Styling for Win95 aesthetic */
 /* Updated: Taskbar height increased to 40px to accommodate Start button icon, adjusted desktop height accordingly. Added styles for Snake game. Added taskbar open apps styling and start game button styling. */
+/* Mobile improvements: Adjusted icon positions for better fit, added aspect-ratio for snake canvas, touch-action for body. */
+/* Alignment fix: Use CSS Grid for icons, stricter text control, smaller mobile sizes. */
+/* New: Increased default window size to 600px x 400px. */
 
 body {
     margin: 0;
@@ -110,6 +113,12 @@ body {
     height: calc(100vh - 40px);
     top: 0;
     overflow: hidden;
+    display: grid; /* Use grid for icon layout */
+    grid-template-rows: repeat(5, minmax(80px, 15vh)); /* 5 rows for icons, max 15vh */
+    grid-template-columns: minmax(80px, 10vw); /* Single column for vertical alignment */
+    align-content: start; /* Start from top */
+    justify-content: start; /* Start from left */
+    padding: 2vh 2vw; /* Add padding for spacing */
 }
 
 #bg {
@@ -121,15 +130,22 @@ body {
     z-index: -1;
 }
 
-/* Icons: Updated for image tags, with pixelated rendering. */
+/* Icons: Updated for grid layout, with pixelated rendering. */
 .icon {
-    position: absolute;
     width: 80px;
     text-align: center;
     cursor: pointer;
     color: white;
     text-shadow: 1px 1px black;
+    grid-column: 1; /* All icons in first column */
 }
+
+/* Assign each icon to a grid row */
+.icon:nth-child(1) { grid-row: 1; } /* About */
+.icon:nth-child(2) { grid-row: 2; } /* Projects */
+.icon:nth-child(3) { grid-row: 3; } /* Resume */
+.icon:nth-child(4) { grid-row: 4; } /* Contact */
+.icon:nth-child(5) { grid-row: 5; } /* Snake */
 
 .icon-image {
     width: 32px;
@@ -143,29 +159,25 @@ body {
     font-size: 14px;
     background: rgb(0, 128, 128);
     padding: 2px;
+    width: 80px; /* Fixed width to prevent text wrapping issues */
+    white-space: normal; /* Allow text to wrap if needed */
+    overflow-wrap: break-word; /* Break long words */
 }
 
-/* Icon positions updated for five desktop icons in a vertical grid */
-.icon:nth-child(1) { top: 50px; left: 50px; } /* About */
-.icon:nth-child(2) { top: 150px; left: 50px; } /* Projects */
-.icon:nth-child(3) { top: 250px; left: 50px; } /* Resume */
-.icon:nth-child(4) { top: 350px; left: 50px; } /* Contact */
-.icon:nth-child(5) { top: 450px; left: 50px; } /* Snake */
-
-/* Windows remain the same. */
+/* Windows: Increased default size. */
 .window {
     display: none;
     position: absolute;
-    width: 400px;
-    height: 300px;
+    width: 600px; /* Increased default width */
+    height: 400px; /* Increased default height */
     background: silver;
     border: 2px outset #dfdfdf;
     box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
     z-index: 10;
     resize: both;
     overflow: auto;
-    min-width: 200px;
-    min-height: 150px;
+    min-width: 300px; /* Adjusted min-width */
+    min-height: 200px; /* Adjusted min-height */
 }
 
 .titlebar {
@@ -252,24 +264,40 @@ body {
     cursor: pointer;
 }
 
-/* Responsive remains the same, but accounts for new 40px taskbar. */
+/* Responsive: Accounts for new 40px taskbar, tighter icon positioning, snake aspect ratio, touch-action. */
 @media (max-width: 768px) {
+    body {
+        touch-action: none; /* Prevent unwanted touch behaviors */
+    }
     .window {
         width: 80%;
-        height: 50%;
+        height: 60%; /* Increased height for better usability */
         left: 10% !important;
-        top: 10% !important;
+        top: 5% !important;
     }
     .icon {
-        width: 60px;
-        font-size: 12px;
+        width: 50px; /* Smaller for mobile */
+        font-size: 10px;
+    }
+    .icon-image {
+        width: 20px; /* Smaller icon images */
+        height: 20px;
+    }
+    .icon-text {
+        width: 50px; /* Match smaller icon width */
+        font-size: 10px;
+    }
+    #desktop {
+        grid-template-rows: repeat(5, minmax(60px, 12vh)); /* Tighter spacing */
+        grid-template-columns: minmax(60px, 15vw);
+        padding: 1vh 1vw;
     }
     #taskbar {
         height: 35px; /* Adjusted for responsiveness */
         font-size: 14px;
     }
     #snakeCanvas {
-        width: 100%; /* Scale down on mobile */
-        height: auto;
+        width: 100%;
+        aspect-ratio: 1 / 1; /* Keep square on mobile */
     }
 }
