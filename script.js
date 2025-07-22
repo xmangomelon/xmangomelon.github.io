@@ -6,6 +6,10 @@
 // Added: Snake game in snake-window with canvas, controls, and logic.
 // Added: Larger initial size for Snake window, start button, and in-app game over display.
 // Added: Taskbar items for open windows.
+// Mobile improvements: Touch dragging for windows, touchstart for z-index, swipe controls for Snake, dynamic canvas resizing.
+// New: Removed cascading offset for true centering, moved resizeSnakeCanvas after display:block for visibility fix, increased snake window size to 500px.
+// Re-added small cascading offset for multiple windows.
+// New: Adjusted window centering to avoid bottom-left corner, using transform and pre-display block.
 
 document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
@@ -32,32 +36,37 @@ document.addEventListener('DOMContentLoaded', () => {
             const windowId = icon.dataset.window;
             const win = document.getElementById(windowId);
             if (win.style.display !== 'block') {
-                // Cascade offset for new windows
-                offsetCounter = (offsetCounter + 20) % 120; // Increment by 20px, reset after 100px to avoid drifting too far
-                const baseLeft = (window.innerWidth - win.offsetWidth) / 2 + offsetCounter;
-                const baseTop = (window.innerHeight - win.offsetHeight - 40) / 2 + offsetCounter; // Adjust for taller taskbar
-                win.style.left = `${baseLeft}px`;
-                win.style.top = `${baseTop}px`;
-
-                // Make Snake window larger on open
+                // Set display block first to ensure correct dimensions
+                win.style.display = 'block';
+                // For Snake window, set larger size
                 if (windowId === 'snake-window') {
-                    win.style.width = '400px';
-                    win.style.height = '400px';
-                    resetSnakeUI(); // Show start button initially
+                    win.style.width = '500px';
+                    win.style.height = '500px';
+                    resetSnakeUI();
                 }
-
+                // Cascade offset (smaller to stay near center)
+                offsetCounter = (offsetCounter + 20) % 100; // Increment by 20px, reset after 100px
+                // Center window with transform for precise positioning
+                win.style.left = '50%';
+                win.style.top = '50%';
+                win.style.transform = `translate(-50%, -50%) translate(${offsetCounter}px, ${offsetCounter}px)`;
                 addTaskbarItem(windowId);
+                // Resize snake canvas after window is visible
+                if (windowId === 'snake-window') {
+                    resizeSnakeCanvas();
+                }
             }
-            win.style.display = 'block';
-            // Bring to front on open
             win.style.zIndex = maxZ++;
         });
     });
 
     const windows = document.querySelectorAll('.window');
     windows.forEach(win => {
-        // Bring to front on mousedown anywhere on the window
+        // Bring to front on mousedown or touchstart anywhere on the window
         win.addEventListener('mousedown', () => {
+            win.style.zIndex = maxZ++;
+        });
+        win.addEventListener('touchstart', () => {
             win.style.zIndex = maxZ++;
         });
 
@@ -80,13 +89,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         maxBtn.addEventListener('click', () => {
             if (win.style.width === '100%') {
-                win.style.width = '400px';
-                win.style.height = '300px';
+                win.style.width = '600px';
+                win.style.height = '400px';
                 win.style.left = '50%';
                 win.style.top = '50%';
                 win.style.transform = 'translate(-50%, -50%)';
                 if (win.id === 'snake-window') {
-                    win.style.height = '400px'; // Keep taller for Snake
+                    win.style.width = '500px';
+                    win.style.height = '500px';
+                    resizeSnakeCanvas();
                 }
             } else {
                 win.style.width = '100%';
@@ -94,6 +105,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 win.style.left = '0';
                 win.style.top = '0';
                 win.style.transform = 'none';
+                if (win.id === 'snake-window') {
+                    resizeSnakeCanvas();
+                }
             }
         });
     });
@@ -102,24 +116,37 @@ document.addEventListener('DOMContentLoaded', () => {
         let isDragging = false;
         let offsetX, offsetY;
 
-        handle.addEventListener('mousedown', (e) => {
-            // Bring to front on click (mousedown on titlebar) - already handled by window mousedown
+        function startDrag(e) {
+            e.preventDefault();
             isDragging = true;
-            offsetX = e.clientX - element.getBoundingClientRect().left;
-            offsetY = e.clientY - element.getBoundingClientRect().top;
+            const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+            const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+            offsetX = clientX - element.getBoundingClientRect().left;
+            offsetY = clientY - element.getBoundingClientRect().top;
             element.style.position = 'absolute';
-        });
+        }
 
-        document.addEventListener('mousemove', (e) => {
+        function drag(e) {
             if (isDragging) {
-                element.style.left = `${e.clientX - offsetX}px`;
-                element.style.top = `${e.clientY - offsetY}px`;
+                e.preventDefault();
+                const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+                const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+                element.style.left = `${clientX - offsetX}px`;
+                element.style.top = `${clientY - offsetY}px`;
+                element.style.transform = 'none'; // Reset transform during drag
             }
-        });
+        }
 
-        document.addEventListener('mouseup', () => {
+        function endDrag() {
             isDragging = false;
-        });
+        }
+
+        handle.addEventListener('mousedown', startDrag);
+        handle.addEventListener('touchstart', startDrag);
+        document.addEventListener('mousemove', drag);
+        document.addEventListener('touchmove', drag, { passive: false });
+        document.addEventListener('mouseup', endDrag);
+        document.addEventListener('touchend', endDrag);
     }
 
     windows.forEach(win => {
@@ -150,6 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 win.style.zIndex = maxZ++;
                 if (windowId === 'snake-window') {
                     resetSnakeUI();
+                    resizeSnakeCanvas();
                 }
             }
         });
@@ -166,8 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let snake = [{x: 10, y: 10}]; // Initial snake position
     let food = {x: Math.floor(Math.random() * 20), y: Math.floor(Math.random() * 20)};
     let direction = {x: 0, y: 0}; // Initial direction (stopped)
-    let score = 0;
-    const blockSize = 16;
+    let blockSize = 16;
     const gridSize = 20;
     const canvas = document.getElementById('snakeCanvas');
     const ctx = canvas ? canvas.getContext('2d') : null;
@@ -176,10 +203,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const gameOverDiv = document.getElementById('snakeGameOver');
     const finalScoreElement = document.getElementById('snakeFinalScore');
     const restartButton = document.getElementById('snakeRestart');
+    let score = 0;
+    let touchStartX = 0;
+    let touchStartY = 0;
 
-    if (canvas) {
-        canvas.width = blockSize * gridSize;
-        canvas.height = blockSize * gridSize;
+    function resizeSnakeCanvas() {
+        const content = document.querySelector('#snake-window .content');
+        let availableSize = Math.min(content.clientWidth - 20, content.clientHeight - 100, 480); // Increased max to 480px
+        if (availableSize <= 0) {
+            availableSize = 320; // Fallback default if size is 0 (hidden)
+        }
+        canvas.width = availableSize;
+        canvas.height = availableSize;
+        blockSize = availableSize / gridSize; // Scale block size dynamically
     }
 
     function resetSnakeUI() {
@@ -204,6 +240,10 @@ document.addEventListener('DOMContentLoaded', () => {
         // Keyboard controls (arrow keys)
         document.addEventListener('keydown', handleKeyDown);
 
+        // Touch controls (swipe on canvas)
+        canvas.addEventListener('touchstart', handleTouchStart);
+        canvas.addEventListener('touchend', handleTouchEnd);
+
         // Game loop (100ms interval for retro speed)
         snakeGameInterval = setInterval(updateSnakeGame, 100);
     }
@@ -211,6 +251,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function stopSnakeGame() {
         clearInterval(snakeGameInterval);
         document.removeEventListener('keydown', handleKeyDown);
+        canvas.removeEventListener('touchstart', handleTouchStart);
+        canvas.removeEventListener('touchend', handleTouchEnd);
         resetSnakeUI();
     }
 
@@ -220,6 +262,25 @@ document.addEventListener('DOMContentLoaded', () => {
             case 'ArrowDown': if (direction.y === 0) direction = {x: 0, y: 1}; break;
             case 'ArrowLeft': if (direction.x === 0) direction = {x: -1, y: 0}; break;
             case 'ArrowRight': if (direction.x === 0) direction = {x: 1, y: 0}; break;
+        }
+    }
+
+    function handleTouchStart(e) {
+        e.preventDefault();
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+    }
+
+    function handleTouchEnd(e) {
+        e.preventDefault();
+        const deltaX = e.changedTouches[0].clientX - touchStartX;
+        const deltaY = e.changedTouches[0].clientY - touchStartY;
+        if (Math.abs(deltaX) > Math.abs(deltaY)) {
+            if (deltaX > 20 && direction.x === 0) direction = {x: 1, y: 0}; // Right (threshold to avoid tiny swipes)
+            else if (deltaX < -20 && direction.x === 0) direction = {x: -1, y: 0}; // Left
+        } else {
+            if (deltaY > 20 && direction.y === 0) direction = {x: 0, y: 1}; // Down
+            else if (deltaY < -20 && direction.y === 0) direction = {x: 0, y: -1}; // Up
         }
     }
 
@@ -266,12 +327,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (startButton) {
         startButton.addEventListener('click', () => {
             startButton.style.display = 'none';
+            resizeSnakeCanvas();
             startSnakeGame();
         });
     }
 
     if (restartButton) {
         restartButton.addEventListener('click', () => {
+            resizeSnakeCanvas();
             startSnakeGame();
         });
     }
@@ -300,5 +363,8 @@ document.addEventListener('DOMContentLoaded', () => {
         camera.aspect = window.innerWidth / (window.innerHeight - 40); // Adjust for taller taskbar
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight - 40);
+        if (document.getElementById('snake-window').style.display === 'block') {
+            resizeSnakeCanvas();
+        }
     });
 });
