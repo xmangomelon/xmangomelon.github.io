@@ -10,6 +10,7 @@
 // New: Removed cascading offset for true centering, moved resizeSnakeCanvas after display:block for visibility fix, increased snake window size to 500px.
 // Re-added small cascading offset for multiple windows.
 // New: Adjusted window centering to avoid bottom-left corner, using transform and pre-display block.
+// New: Added win.scrollTop = 0 to ensure content starts at top.
 
 document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
@@ -55,6 +56,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (windowId === 'snake-window') {
                     resizeSnakeCanvas();
                 }
+                // Scroll window content to top
+                win.scrollTop = 0;
             }
             win.style.zIndex = maxZ++;
         });
