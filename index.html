@@ -2,11 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Windows 95 Portfolio</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tyler Evans Portfolio</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
     <div id="boot-screen">
@@ -17,7 +16,7 @@
 
     <div id="taskbar">
         <button id="start-button">
-            <img src="icons/start.ico" alt="Start" class="icon-image">
+            <img src="icons/start.ico" alt="Start Icon" class="icon-image">
             Start
         </button>
         <div id="open-apps"></div>
@@ -25,31 +24,34 @@
     </div>
 
     <div id="desktop">
-        <canvas id="bg"></canvas>
-
         <div class="icon" data-window="about-window">
-            <img src="icons/notepad.ico" alt="About" class="icon-image">
+            <img src="icons/notepad.ico" alt="About Icon" class="icon-image">
             <div class="icon-text">About</div>
         </div>
 
         <div class="icon" data-window="projects-window">
-            <img src="icons/projects.ico" alt="Projects" class="icon-image">
+            <img src="icons/projects.ico" alt="Projects Icon" class="icon-image">
             <div class="icon-text">Projects</div>
         </div>
 
         <div class="icon" data-window="resume-window">
-            <img src="icons/folder.ico" alt="Resume" class="icon-image">
+            <img src="icons/folder.ico" alt="Resume Icon" class="icon-image">
             <div class="icon-text">Resume</div>
         </div>
 
         <div class="icon" data-window="contact-window">
-            <img src="icons/notepad.ico" alt="Contact" class="icon-image">
+            <img src="icons/notepad.ico" alt="Contact Icon" class="icon-image">
             <div class="icon-text">Contact</div>
         </div>
 
         <div class="icon" data-window="snake-window">
-            <img src="icons/Snake.ico" alt="Snake" class="icon-image">
+            <img src="icons/Snake.ico" alt="Snake Icon" class="icon-image">
             <div class="icon-text">Snake</div>
+        </div>
+
+        <div class="icon" data-window="minesweeper-window">
+            <img src="icons/minesweeper.ico" alt="Minesweeper Icon" class="icon-image">
+            <div class="icon-text">minesweeper</div>
         </div>
 
         <div id="about-window" class="window">
@@ -76,14 +78,11 @@
                 </div>
             </div>
             <div class="content">
-                Projects arent uploaded to GIT right now, most are WIP<br>
-                <br>
+                Projects arent uploaded to GIT right now, most are WIP<br><br>
                 PDF File Converter and splitter<br>
-                - specific to my usecase with basic ui and control over file size/overlap, can convert most plaintext based files into PDF<br>
-                <br>
+                - specific to my usecase with basic ui and control over file size/overlap, can convert most plaintext based files into PDF<br><br>
                 Web Scraper<br>
-                - specific to my usecase scrapes city website and stores all links before scraping, formatting, and anaylyzing using GPT API<br>
-                <br>
+                - specific to my usecase scrapes city website and stores all links before scraping, formatting, and anaylyzing using GPT API<br><br>
                 Mobile Game<br>
                 - Stage 1 development no info currently
             </div>
@@ -99,22 +98,19 @@
                 </div>
             </div>
             <div class="content">
-                <strong>Programming Languages</strong><br>
+                Programming Languages<br>
                 - Python and C++ (1 year+ experience)<br>
-                - HTML, CSS, JS, C (Basic Experience)<br>
-                <br>
-                <strong>Work Experience</strong><br>
+                - HTML, CSS, JS, C (Basic Experience)<br><br>
+                Work Experience<br>
                 - City of Oakland Park, Florida<br>
-                    3 internships with the City in the Summers of 2023, 2024, and currently 2025<br>
-                <br>
+                    3 internships with the City in the Summers of 2023, 2024, and currently 2025<br><br>
                     2023 - IT Technician<br>
                         In-person and remote support for city services and software<br>
                     2024 - IT Technician/AI Prompting<br>
                         In-person and remote support, started integration of GPT into city workflows, created custom GPTs for specific use cases<br>
                     2025 - AI Integration/IT Technician<br>
-                        Broader AI SaaS usage, working on workflow integrations for all departments<br>
-                <br>
-                <strong>Software Experience</strong><br>
+                        Broader AI SaaS usage, working on workflow integrations for all departments<br><br>
+                Software Experience<br>
                 - RetellAI, ChatGPT, RingCentral, Azure, Active Directory, SentinelOne, Cisco Secure Service, Faronics
             </div>
         </div>
@@ -129,7 +125,7 @@
                 </div>
             </div>
             <div class="content">
-                Email: tylerbryceevans2006@gmail.com 
+                Email: tylerbryceevans2006@gmail.com
             </div>
         </div>
 
@@ -144,12 +140,61 @@
             </div>
             <div class="content">
                 <button id="snakeStartButton">Start Game</button>
+                <div id="snakeHighScores" class="high-score-list" style="display: none;"></div> <!-- High scores under start button -->
                 <canvas id="snakeCanvas"></canvas>
                 <div id="snakeScore">Score: 0</div>
                 <div id="snakeGameOver">
                     Game Over!<br>
                     Score: <span id="snakeFinalScore"></span><br>
                     <button id="snakeRestart">Restart</button>
+                </div>
+                <div id="snakeNameInput" class="name-input-window" style="display: none;">
+                    <div class="titlebar">
+                        <span>Enter Name</span>
+                    </div>
+                    <div class="name-input-content">
+                        <input type="text" id="snakeNameField" maxlength="3" placeholder="AAA">
+                        <button id="snakeNameSubmit">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="minesweeper-window" class="window">
+            <div class="titlebar">
+                <span>Minesweeper</span>
+                <div class="window-buttons">
+                    <button class="minimize">-</button>
+                    <button class="maximize">□</button>
+                    <button class="close">X</button>
+                </div>
+            </div>
+            <div class="content">
+                <div id="minesweeper-controls">
+                    <select id="minesweeper-mode">
+                        <option value="beginner">Beginner (9x9, 10 mines)</option>
+                        <option value="intermediate">Intermediate (16x16, 40 mines)</option>
+                        <option value="expert">Expert (30x16, 99 mines)</option>
+                    </select>
+                    <button id="minesweeper-start">Start Game</button>
+                    <div id="minesweeper-timer">Time: 0</div>
+                    <div id="minesweeper-flags">Flags: 0</div>
+                </div>
+                <div id="minesweeper-grid"></div>
+                <div id="minesweeper-gameover" style="display: none;">
+                    Game Over! <button id="minesweeper-restart">Restart</button>
+                </div>
+                <div id="minesweeper-win" style="display: none;">
+                    You Win! <button id="minesweeper-restart-win">Play Again</button>
+                </div>
+                <div id="minesweeperNameInput" class="name-input-window" style="display: none;">
+                    <div class="titlebar">
+                        <span>Enter Name</span>
+                    </div>
+                    <div class="name-input-content">
+                        <input type="text" id="minesweeperNameField" maxlength="3" placeholder="AAA">
+                        <button id="minesweeperNameSubmit">Submit</button>
+                    </div>
                 </div>
             </div>
         </div>
