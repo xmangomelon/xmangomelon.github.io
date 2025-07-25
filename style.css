@@ -3,10 +3,10 @@
 /* Mobile improvements: Adjusted icon positions for better fit, added aspect-ratio for snake canvas, touch-action for body. */
 /* Alignment fix: Use CSS Grid for icons, stricter text control, smaller mobile sizes. */
 /* New: Increased default window size to 600px x 400px. */
-/* Mobile scaling fix: Increased window height to calc(100vh - 80px), adjusted positioning for better centering. */
-/* Fix: Adjusted mobile window to fit screen without off-screen issues, added transform none. */
-/* New: Scaled down entire app on mobile with viewport scaling, smaller font/button sizes. */
-/* New: Full-screen windows on mobile, disabled resize, hidden overflow. */
+/* New: Added styles for Minesweeper game (grid, cells, colors, etc.). */
+/* New: Added styles for name input dialogs as Win95-style windows. */
+/* New: High scores now integrated under start button with retro borders and pixelated style; adjusted margins for Snake layout. */
+/* Fix: Centered Minesweeper grid with margin: 0 auto; styled timer as red LED clock (black background, red text, padding for segment look); tightened icon hitboxes with flex, reduced padding/margin, pointer-events on children. */
 
 body {
     margin: 0;
@@ -118,20 +118,11 @@ body {
     top: 0;
     overflow: hidden;
     display: grid; /* Use grid for icon layout */
-    grid-template-rows: repeat(5, minmax(80px, 15vh)); /* 5 rows for icons, max 15vh */
+    grid-template-rows: repeat(6, minmax(80px, 15vh)); /* 6 rows now for added Minesweeper icon */
     grid-template-columns: minmax(80px, 10vw); /* Single column for vertical alignment */
     align-content: start; /* Start from top */
     justify-content: start; /* Start from left */
     padding: 2vh 2vw; /* Add padding for spacing */
-}
-
-#bg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
 }
 
 /* Icons: Updated for grid layout, with pixelated rendering. */
@@ -142,6 +133,16 @@ body {
     color: white;
     text-shadow: 1px 1px black;
     grid-column: 1; /* All icons in first column */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0; /* Reduce padding for tighter hitbox */
+    margin: 0; /* Reduce margin to prevent extended click area */
+    pointer-events: none; /* Disable on container */
+}
+
+.icon * {
+    pointer-events: auto; /* Enable on image and text only */
 }
 
 /* Assign each icon to a grid row */
@@ -150,6 +151,7 @@ body {
 .icon:nth-child(3) { grid-row: 3; } /* Resume */
 .icon:nth-child(4) { grid-row: 4; } /* Contact */
 .icon:nth-child(5) { grid-row: 5; } /* Snake */
+.icon:nth-child(6) { grid-row: 6; } /* Minesweeper */
 
 .icon-image {
     width: 32px;
@@ -268,88 +270,225 @@ body {
     cursor: pointer;
 }
 
+/* Minesweeper styles */
+#minesweeper-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+#minesweeper-mode,
+#minesweeper-start,
+#minesweeper-restart,
+#minesweeper-restart-win {
+    padding: 5px;
+    font-size: 16px;
+    background: silver;
+    border: 2px outset #fff;
+    cursor: pointer;
+    font-family: 'VT323', monospace;
+}
+
+#minesweeper-mode:active,
+#minesweeper-start:active,
+#minesweeper-restart:active,
+#minesweeper-restart-win:active {
+    border: 2px inset #fff;
+}
+
+#minesweeper-timer,
+#minesweeper-flags {
+    font-size: 16px;
+    color: black;
+}
+
+#minesweeper-grid {
+    display: grid;
+    margin: 0 auto;
+    background: silver;
+    border: 2px inset #fff;
+}
+
+/* Fix: Center grid in window */
+#minesweeper-grid {
+    margin: 0 auto; /* Center horizontally */
+}
+
+.minesweeper-cell {
+    width: 20px;
+    height: 20px;
+    background: silver;
+    border: 2px outset #fff;
+    font-size: 14px;
+    text-align: center;
+    line-height: 20px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.minesweeper-cell.revealed {
+    border: 1px solid gray;
+    background: #dfdfdf;
+}
+
+.minesweeper-cell.flagged {
+    background: yellow;
+}
+
+.minesweeper-cell.mine {
+    background: red;
+}
+
+#minesweeper-gameover,
+#minesweeper-win {
+    text-align: center;
+    font-size: 20px;
+    margin-top: 20px;
+    color: black;
+}
+
+/* High scores styles (integrated under start button or in game over/win) */
+.high-score-list {
+    margin-top: 10px;
+    padding: 10px;
+    background: #dfdfdf;
+    border: 2px inset #fff;
+    image-rendering: pixelated; /* Retro pixelated feel */
+    text-align: center;
+    color: black;
+}
+
+.high-score-list h3 {
+    margin: 0 0 10px;
+    font-size: 18px;
+}
+
+.high-score-list ul {
+    list-style: none;
+    padding: 0;
+    font-size: 16px; /* Retro monospace size */
+}
+
+.high-score-list li {
+    margin: 5px 0;
+}
+
+/* Name input styles (mimicking Win95 window) */
+.name-input-window {
+    margin: 20px auto;
+    width: fit-content;
+    background: silver;
+    border: 2px outset #dfdfdf;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+    image-rendering: pixelated;
+}
+
+.name-input-window .titlebar {
+    font-size: 16px;
+}
+
+.name-input-content {
+    padding: 10px;
+    text-align: center;
+}
+
+.name-input-content input {
+    width: 60px;
+    padding: 5px;
+    font-family: 'VT323', monospace;
+    font-size: 16px;
+    background: white;
+    border: 2px inset #fff;
+    text-transform: uppercase; /* Force uppercase visually */
+}
+
+.name-input-content button {
+    margin-left: 10px;
+    padding: 5px 10px;
+    font-size: 16px;
+    background: silver;
+    border: 2px outset #fff;
+    cursor: pointer;
+}
+
+.name-input-content button:active {
+    border: 2px inset #fff;
+}
+
+/* Fix: Red LED clock style for timer */
+#minesweeper-timer {
+    background: black;
+    color: red;
+    padding: 2px 5px;
+    font-size: 16px;
+    border: 2px inset #fff;
+    text-align: center;
+    image-rendering: pixelated;
+}
+
 /* Responsive: Accounts for new 40px taskbar, tighter icon positioning, snake aspect ratio, touch-action. */
 @media (max-width: 768px) {
     body {
         touch-action: none; /* Prevent unwanted touch behaviors */
-        zoom: 0.7; /* Scale down entire page by 70% on mobile for smaller appearance */
     }
     .window {
-        width: 90%; /* Wider for better fit */
-        height: 70vh; /* Reduced to 70vh to fit without scrolling */
-        left: 5% !important; /* Center horizontally */
-        top: 0 !important; /* Start from top */
-        transform: none !important; /* Override JS transform */
-        max-height: calc(100vh - 40px); /* Prevent overflow with taskbar */
-        resize: none; /* Disable resize on mobile to avoid overflow */
+        width: 80%;
+        height: 60%; /* Increased height for better usability */
+        left: 10% !important;
+        top: 5% !important;
     }
     .icon {
-        width: 40px; /* Smaller icons */
-        font-size: 8px;
+        width: 50px; /* Smaller for mobile */
+        font-size: 10px;
     }
     .icon-image {
-        width: 16px; /* Smaller icon images */
-        height: 16px;
+        width: 20px; /* Smaller icon images */
+        height: 20px;
     }
     .icon-text {
-        width: 40px; /* Match smaller icon width */
-        font-size: 8px;
+        width: 50px; /* Match smaller icon width */
+        font-size: 10px;
     }
     #desktop {
-        grid-template-rows: repeat(5, minmax(40px, 10vh)); /* Tighter spacing */
-        grid-template-columns: minmax(40px, 12vw);
-        padding: 0.5vh 0.5vw;
+        grid-template-rows: repeat(6, minmax(60px, 12vh)); /* Tighter spacing for 6 icons */
+        grid-template-columns: minmax(60px, 15vw);
+        padding: 1vh 1vw;
     }
     #taskbar {
-        height: 30px; /* Smaller taskbar */
-        font-size: 12px;
-    }
-    #start-button {
-        height: 24px;
-        font-size: 12px;
-        padding: 2px;
-    }
-    .taskbar-app {
-        height: 24px;
-        padding: 1px 5px;
-        font-size: 12px;
-    }
-    .taskbar-app img {
-        width: 12px;
-        height: 12px;
-    }
-    #taskbar-time {
-        padding: 1px 3px;
-        font-size: 12px;
-    }
-    .titlebar {
-        padding: 1px 3px; /* Smaller titlebar */
-        font-size: 12px;
-    }
-    .window-buttons button {
-        width: 16px; /* Smaller buttons */
-        height: 16px;
-        font-size: 10px;
-        line-height: 12px;
-    }
-    .content {
-        padding: 5px; /* Reduced padding */
-        font-size: 12px; /* Smaller font in content */
+        height: 35px; /* Adjusted for responsiveness */
+        font-size: 14px;
     }
     #snakeCanvas {
         width: 100%;
         aspect-ratio: 1 / 1; /* Keep square on mobile */
     }
-    #snakeStartButton,
-    #snakeRestart {
-        font-size: 12px;
-        padding: 3px 6px;
+    .minesweeper-cell {
+        width: 15px;
+        height: 15px;
+        font-size: 10px;
+        line-height: 15px;
     }
-    #snakeScore {
+    .high-score-list {
+        font-size: 14px;
+        padding: 5px;
+    }
+    .high-score-list h3 {
+        font-size: 16px;
+    }
+    .high-score-list ul {
         font-size: 14px;
     }
-    #snakeGameOver {
-        font-size: 16px;
-        margin-top: 30px;
+    .name-input-window {
+        font-size: 14px;
+        padding: 5px;
+    }
+    .name-input-content input {
+        width: 50px;
+        font-size: 14px;
+    }
+    .name-input-content button {
+        font-size: 14px;
+        padding: 3px 8px;
     }
 }
